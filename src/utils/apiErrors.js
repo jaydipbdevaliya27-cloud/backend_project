@@ -1,6 +1,3 @@
-import { error } from "node:console";
-import { captureOwnerStack } from "react";
-
 class apiErrors extends Error {
     constructor(
         statusCode,
