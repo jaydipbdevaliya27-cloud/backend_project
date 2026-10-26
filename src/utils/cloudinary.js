@@ -10,7 +10,11 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (localFilePath) => {
     try{
-        if(!localFilePath) return console.log("Local file path not found");
+        // console.log(process.env.CLOUDINARY_API_KEY);
+        if(!localFilePath) {
+            console.log("Local file path not found");
+            return null
+        }
         // file uploaded on cloudinary 
         const response = await cloudinary.uploader.upload(localFilePath,{
             resource_type :"auto"

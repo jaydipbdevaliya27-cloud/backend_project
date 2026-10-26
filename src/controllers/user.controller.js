@@ -7,10 +7,11 @@ import { apiResponse } from "../utils/apiResponse.js"
 
 const registerUser = asyncHandler(async (req, res) => {
     const { fullname, email, username, password } = req.body;
-    // console.log({fullname});
+    console.log(fullname);
 
     if ([fullname, email, username, password].some((field) => field?.trim() === "")) {
         throw new apiErrors(400, "All fieldsa are required")
+        return;
     }
 
     //User Existence validation
@@ -19,6 +20,7 @@ const registerUser = asyncHandler(async (req, res) => {
     })
     if (existedUser) {
         throw new apiErrors(409, "User is already Existed");
+                return;
     }
 
 
@@ -29,15 +31,19 @@ const registerUser = asyncHandler(async (req, res) => {
     const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
 
 
+    console.log(avatarLocalPath);
     if (!avatarLocalPath) {
-        throw new apiErrors(400, "Avatar file is required")
+        throw new apiErrors(400, "(localPathError) Avatar file is required")
+                return;
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath);
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
     if (!avatar) {
-        throw new apiErrors(400, "Avatar file is required")
+        throw new apiErrors(400, "avatar Avatar file is required")
+                return;
     }
+        const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
 
     const user = await User.create({
@@ -53,11 +59,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (!createdUser) {
         throw new apiErrors(500, "something went wrong while registering the user")
+                return;
     }
 
 
     return res.status(201).json(
-        new apiResponse(200, createdUser, "user registered successfully")
+        new apiResponse(201, createdUser, "user registered successfully")
     )
 })
 
