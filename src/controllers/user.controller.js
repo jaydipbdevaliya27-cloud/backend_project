@@ -7,7 +7,7 @@ import { apiResponse } from "../utils/apiResponse.js"
 
 const registerUser = asyncHandler(async (req, res) => {
     const { fullname, email, username, password } = req.body;
-    console.log(fullname);
+    // console.log(fullname);
 
     if ([fullname, email, username, password].some((field) => field?.trim() === "")) {
         throw new apiErrors(400, "All fieldsa are required")
@@ -20,30 +20,29 @@ const registerUser = asyncHandler(async (req, res) => {
     })
     if (existedUser) {
         throw new apiErrors(409, "User is already Existed");
-                return;
+        return;
     }
+    console.log(req.files)
 
 
-    // const avatarLocalPath = req.files?.avatar[0]?.path;
-    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
     // Add an extra '?' before [0] to prevent crashes if coverImage is empty
-    const avatarLocalPath = req.files?.avatar?.[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+    const avatarLocalPath = req.files?.avatar[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
 
     console.log(avatarLocalPath);
     if (!avatarLocalPath) {
         throw new apiErrors(400, "(localPathError) Avatar file is required")
-                return;
+        return;
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath);
 
     if (!avatar) {
         throw new apiErrors(400, "avatar Avatar file is required")
-                return;
+        return;
     }
-        const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
 
     const user = await User.create({
@@ -59,7 +58,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (!createdUser) {
         throw new apiErrors(500, "something went wrong while registering the user")
-                return;
+        return;
     }
 
 
@@ -68,4 +67,7 @@ const registerUser = asyncHandler(async (req, res) => {
     )
 })
 
-export { registerUser }
+const loginUser = asyncHandler(async (req, res) => {
+
+})
+export { registerUser , loginUser }
